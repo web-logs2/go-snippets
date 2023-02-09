@@ -1,0 +1,1 @@
+package go_run_remote_module_example
