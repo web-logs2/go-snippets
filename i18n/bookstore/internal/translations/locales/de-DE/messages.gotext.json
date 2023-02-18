@@ -33,6 +33,11 @@
                     "expr": "totalBookCount"
                 }
             ]
+        },
+        {
+            "id": "Launching soon!",
+            "message": "Bald verfügbar!",
+            "translation": ""
         }
     ]
 }

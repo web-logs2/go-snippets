@@ -1,37 +1,29 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	// Import the internal/translations package, so that its init()
 	// function is called.
+	"bookstore.example.com/internal/localizer"
 	_ "bookstore.example.com/internal/translations"
-
-	"golang.org/x/text/language"
-	"golang.org/x/text/message"
 )
 
 func handleHome(w http.ResponseWriter, r *http.Request) {
-	locale := r.URL.Query().Get(":locale")
-
-	var lang language.Tag
-
-	switch locale {
-	case "en-gb":
-		lang = language.MustParse("en-GB")
-	case "de-de":
-		lang = language.MustParse("de-DE")
-	case "fr-ch":
-		lang = language.MustParse("fr-CH")
-	default:
+	// Initialize a new Localizer based on the locale ID in the URL
+	l, ok := localizer.Get(r.URL.Query().Get(":locale"))
+	if !ok {
 		http.NotFound(w, r)
 		return
 	}
 
-	// Revert the total book count.
 	var totalBookCount = 1_252_794
 
-	p := message.NewPrinter(lang)
-	p.Fprintf(w, "Welcome!\n")
-	p.Fprintf(w, "%d books available\n", totalBookCount)
+	// Update these to use the new Translate() method.
+	fmt.Fprintln(w, l.Translate("Welcome!"))
+	fmt.Fprintln(w, l.Translate("%d books available", totalBookCount))
+
+	// Add an additional "Launching soon!" message.
+	fmt.Fprintln(w, l.Translate("Launching soon!"))
 }
